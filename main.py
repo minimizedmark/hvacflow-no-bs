@@ -5,17 +5,13 @@ import httpx
 import os
 
 app = FastAPI()
-
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-
 API_KEY = os.getenv("API_KEY")
-J.   J u.
+
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    return """ Cc
-<!DOCTYPE html>
-<html>
-<head><title>HVACFlow</title><style>body{background:#000;color:#0f0;font-family:Arial;margin:0;padding:20px;}#chat{height:70vh;overflow:auto;border:1px solid #0f0;padding:10px;background:#111;border-radius:8px;}#input{width:100%;padding:12px;background:#111;color:#0f0;border:1px solid #0f0;margin-top:10px;border-radius:8px;}</style></head><body>
+    return """
+<html><head><title>HVACFlow</title><style>body{background:#000;color:#0f0;font-family:Arial;margin:0;padding:20px;}#chat{height:70vh;overflow:auto;border:1px solid #0f0;padding:10px;background:#111;border-radius:8px;}#input{width:100%;padding:12px;background:#111;color:#0f0;border:1px solid #0f0;margin-top:10px;border-radius:8px;}</style></head><body>
 <h1>HVACFlow™</h1>
 <div id="chat"></div>
 <input id="input" placeholder="AC not cooling?">
@@ -38,9 +34,8 @@ input.onkeypress = async e => {
   }
 };
 </script>
-</body>
-</html>
-    """
+</body></html>
+"""
 
 @app.post("/ask")
 async def ask(request: Request):
@@ -52,7 +47,7 @@ async def ask(request: Request):
     if not q:
         return {"reply": "Type something"}
     if not API_KEY:
-        return {"reply": "No API key"}
+        return {"reply": "No API key — check Render env"}
     async with httpx.AsyncClient(timeout=30) as client:
         try:
             r = await client.post(
@@ -65,3 +60,5 @@ async def ask(request: Request):
             return {"reply": f"API {r.status_code}"}
         except:
             return {"reply": "Service error"}
+            return {"reply": "Service error"}
+
